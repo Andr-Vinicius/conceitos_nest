@@ -1,11 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+//  nest g controller nome_controller/pasta --no-spec (Sem testes)
+@Controller('/')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get() // Método padrão para requisições de leitura (Read)
   getHello(): string {
     return this.appService.getHello();
   }
