@@ -1,5 +1,20 @@
 @baseUrl = http://localhost:3000
 
+# Messages
+
+GET {{baseUrl}}/messages 
+
+### FindOne
+GET {{baseUrl}}/messages/5
+
+### Create
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+    "message": "01"
+}
+
 ### AppController - GetHello
 
 # @name GetHello
