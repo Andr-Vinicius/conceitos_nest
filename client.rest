@@ -2,18 +2,37 @@
 
 # Messages
 
-GET {{baseUrl}}/messages 
+GET {{baseUrl}}/messages/?limit=10&offset=0 
 
 ### FindOne
-GET {{baseUrl}}/messages/5
+GET {{baseUrl}}/messages/2
 
 ### Create
-POST {{baseUrl}}/messages
+POST {{baseUrl}}/messages/
 Content-Type: application/json
 
-{
-    "message": "01"
-}
+  {
+    "text": "Novo recado",
+    "from": "Vinicius",
+    "to": "Todos",
+    "opened": false,
+    "date": "2026-11-03T16:58:03.621Z"
+  }
+
+### Update
+PUT {{baseUrl}}/messages/2/
+Content-Type: application/json
+
+  {
+    "text": "Recado Atualizado",
+    "from": "Vinicius",
+    "to": "Todos",
+    "opened": false,
+    "date": "2026-11-03T16:58:03.621Z"
+  }
+
+### Delete
+DELETE {{baseUrl}}/messages/2/
 
 ### AppController - GetHello
 
