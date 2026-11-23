@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MessageEntity } from './entities/messages.entity';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
 
 // Vai ser basicamente um repositório, uma interface entre a minha aplicação e a Base de Dados
 @Injectable()
@@ -32,18 +34,20 @@ export class MessagesService {
     return message;
   }
 
-  create(body: any) {
+  create(createMessageDto: CreateMessageDto) {
     this.lastId++;
     const id = this.lastId;
     const newMessage = {
       id,
-      ...body,
+      ...createMessageDto,
+      opened: false,
+      date: new Date(),
     };
     this.messages.push(newMessage);
     return newMessage;
   }
 
-  update(id: string, body: any) {
+  update(id: string, updateMessageDto: UpdateMessageDto) {
     const originalMessage = this.findOne(id);
     if (!originalMessage)
       throw new NotFoundException(`Message with id ${id} not found`);
@@ -54,7 +58,7 @@ export class MessagesService {
     if (originalMessage) {
       this.messages[messsageIndex] = {
         ...originalMessage,
-        ...body,
+        ...updateMessageDto,
       };
     }
     return this.messages[messsageIndex];

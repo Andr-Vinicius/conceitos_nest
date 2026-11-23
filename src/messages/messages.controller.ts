@@ -11,11 +11,16 @@ import {
   Query,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
 
 // Class Decorator
 @Controller('messages')
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
+
+  // DTO - Data Transfer Object
+  // Objeto simples x Validar dados / Transformar dados (NestJS)
 
   @HttpCode(HttpStatus.OK)
   @Get('/')
@@ -32,16 +37,16 @@ export class MessagesController {
   }
 
   @Post()
-  create(@Body() body: any): any {
-    return this.messagesService.create(body);
+  create(@Body() createMessageDto: CreateMessageDto): any {
+    return this.messagesService.create(createMessageDto);
   }
 
   // Update -> PATCH / PUT
   // PATCH -> Atualizar dados de um recurso (Parcial)
   // PUT -> Atualizar dados de um recurso (Completo)
   @Put(':id')
-  update(@Param('id') id: string, @Body() body: any): any {
-    return this.messagesService.update(id, body);
+  update(@Param('id') id: string, updateMessageDto: UpdateMessageDto): any {
+    return this.messagesService.update(id, updateMessageDto);
   }
 
   @Delete(':id')
