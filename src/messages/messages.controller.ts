@@ -45,12 +45,15 @@ export class MessagesController {
   // PATCH -> Atualizar dados de um recurso (Parcial)
   // PUT -> Atualizar dados de um recurso (Completo)
   @Put(':id')
-  update(@Param('id') id: string, updateMessageDto: UpdateMessageDto): any {
+  update(
+    @Param('id') id: string,
+    @Body() updateMessageDto: UpdateMessageDto,
+  ): any {
     return this.messagesService.update(id, updateMessageDto);
   }
 
   @Delete(':id')
   delete(@Param('id') id: string) {
-    this.messagesService.delete(id);
+    void this.messagesService.delete(id);
   }
 }

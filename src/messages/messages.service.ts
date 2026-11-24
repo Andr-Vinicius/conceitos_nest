@@ -1,76 +1,68 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MessageEntity } from './entities/messages.entity';
+import { Message } from './entities/messages.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 // Vai ser basicamente um repositório, uma interface entre a minha aplicação e a Base de Dados
 @Injectable()
 export class MessagesService {
-  private lastId = 1;
-  // Setando um dado inicial pro nosso "Banco de Dados"
-  private messages: MessageEntity[] = [
-    {
-      id: 1,
-      text: 'Hello World',
-      from: 'Vinicius',
-      to: 'Todos',
-      opened: false,
-      date: new Date(),
-    },
-  ];
+  constructor(
+    @InjectRepository(Message) // Estudar sobre o Repository
+    private readonly messageRepository: Repository<Message>,
+  ) {}
 
-  findAll() {
-    return this.messages;
+  async findAll() {
+    const messages = await this.messageRepository.find();
+    return messages;
   }
 
-  findOne(id: string) {
-    const message = this.messages.find((message) => message.id === Number(id));
+  async findOne(id: string) {
+    //const message = this.messages.find((message) => message.id === Number(id));
+    const message = await this.messageRepository.findOne({
+      where: {
+        id: Number(id),
+      },
+    });
     if (!message)
       throw new NotFoundException(`Message with id ${id} not found`);
 
     return message;
   }
 
-  create(createMessageDto: CreateMessageDto) {
-    this.lastId++;
-    const id = this.lastId;
+  async create(createMessageDto: CreateMessageDto) {
     const newMessage = {
-      id,
       ...createMessageDto,
       opened: false,
       date: new Date(),
     };
-    this.messages.push(newMessage);
-    return newMessage;
+    const message = this.messageRepository.create(newMessage); // Create não é assincrono, portanto não retorna uma Promisse
+    return this.messageRepository.save(message);
   }
 
-  update(id: string, updateMessageDto: UpdateMessageDto) {
-    const originalMessage = this.findOne(id);
-    if (!originalMessage)
-      throw new NotFoundException(`Message with id ${id} not found`);
-    const messsageIndex = this.messages.findIndex(
-      (message) => message.id === Number(id),
-    );
+  async update(id: string, updateMessageDto: UpdateMessageDto) {
+    const partialUpdateDTO = {
+      opened: updateMessageDto?.opened,
+      text: updateMessageDto?.text,
+    };
 
-    if (originalMessage) {
-      this.messages[messsageIndex] = {
-        ...originalMessage,
-        ...updateMessageDto,
-      };
-    }
-    return this.messages[messsageIndex];
+    const message = await this.messageRepository.preload({
+      id: Number(id),
+      ...partialUpdateDTO,
+    });
+    if (!message)
+      throw new NotFoundException(`Message with id ${id} not found`);
+    await this.messageRepository.save(message);
+    return message;
   }
 
-  delete(id: string) {
-    const messageId = this.findOne(id);
-
-    if (messageId) {
-      this.messages.splice(this.messages.indexOf(messageId), 1);
-    } else {
+  async delete(id: string) {
+    const message = await this.messageRepository.findOneBy({
+      id: Number(id),
+    });
+    if (!message)
       throw new NotFoundException(`Message with id ${id} not found`);
-    }
+    return this.messageRepository.remove(message);
   }
 }

@@ -14,9 +14,7 @@ Content-Type: application/json
   {
     "text": "Novo recado",
     "from": "Vinicius",
-    "to": "Todos",
-    "opened": false,
-    "date": "2026-11-03T16:58:03.621Z"
+    "to": "Todos"
   }
 
 ### Update
@@ -25,10 +23,7 @@ Content-Type: application/json
 
   {
     "text": "Recado Atualizado",
-    "from": "Vinicius",
-    "to": "Todos",
-    "opened": false,
-    "date": "2026-11-03T16:58:03.621Z"
+    "opened": true
   }
 
 ### Delete
@@ -43,3 +38,32 @@ GET {{baseUrl}}
 
 # @name ShowText
 GET {{baseUrl}}/concepts  
+
+### People
+
+GET {{baseUrl}}/people/?limit=10&offset=0 
+
+### FindOne
+GET {{baseUrl}}/people/46
+
+### POST
+POST {{baseUrl}}/people/
+Content-Type: application/json
+
+  {
+    "email": "teste@gmail.com",
+    "name": "Maria",
+    "password": "123456"
+  }
+
+### Update
+PATCH {{baseUrl}}/people/1/
+Content-Type: application/json
+
+  {
+    "name": "Maria",
+    "password": "654321"
+  }
+
+### Delete
+DELETE {{baseUrl}}/people/46/

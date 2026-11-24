@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MessagesModule } from 'src/messages/messages.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PeopleModule } from 'src/people/people.module';
 //import { ConceptsManualModule } from 'src/concepts-manual/concepts-manual.module';
 
 // Encapsulamento da aplicação
@@ -19,6 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true, // Sincroniza o código com o BD, não é usado em produção
     }),
     MessagesModule,
+    PeopleModule,
   ],
   controllers: [AppController], // Controla as requisições e respostas
   providers: [AppService], // Lógica de negócio, serviços e dependências
